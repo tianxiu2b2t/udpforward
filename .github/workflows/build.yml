@@ -1,0 +1,33 @@
+name: Rust Build and Upload Artifacts
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        default: true
+        
+    - name: Build release binaries
+      run: cargo build --release --bins
+      
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: rust-binaries
+        path: target/release/
+        # 可选：设置制品保留时间（天），默认为90天
+        retention-days: 30
